@@ -30,7 +30,7 @@ blogRouter.post('/', (req, res) => {
 
   blogRouter.get("/:search", (req, res) => {
 
-    blog.find({"title" : {$regex : req.params.search}}
+    blog.find({"title" : {$regex : req.params.search}}//to find with key words///
    
     , (error, searchedBlogs) => {
 console.log(searchedBlogs)
@@ -51,28 +51,46 @@ console.log(searchedBlogs)
   ////////////////////////////////////////////////////////////
 
 //UPDATE OPERATION
-blogRouter.put(
-"/:id",
-(req, res, next) => {
-    const post = new blog({
-        _id: req.body.id,
-        title: req.body.title,
-        content: req.body.content,
+// blogRouter.put(
+// "/:id",
+// (req, res, next) => {
+//     const post = new blog({
+//         _id: req.body.id,
+//         title: req.body.title,
+//         content: req.body.content,
      
-    });
-    blog.updateOne(
-        { _id: req.params.id},
-        post
-      ).then(result => {
-        if(result){
-            res.status(200).json({ message: "Update successful!" });
-        }       
-        else {
-            res.status(500).json({ message: "Error Upating Post" });
-        }
-    });
-}
-);
+//     });
+//     blog.updateOne(
+//         { _id: req.params.id},
+//         post
+//       ).then(result => {
+//         if(result){
+//             res.status(200).json({ message: "Update successful!" });
+//         }       
+//         else {
+//             res.status(500).json({ message: "Error Upating Post" });
+//         }
+//     });
+// }
+// );
+
+blogRouter.put("/:id", (req, res)=>{
+  const id = req.params.id
+  const updatedBlog = req.body
+
+  blog.updateOne({_id:id}, updatedBlog, {new: true},(err, updatedBlog)=>{
+      if(err){
+          console.error(error)
+          res.status(404).json({message: err.message})
+      } else {
+          res.status(202).json(updatedBlog)
+      }
+  })
+})
+
+
+
+
 
 
 //DELETE OPERATION
